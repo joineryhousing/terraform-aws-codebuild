@@ -13,56 +13,59 @@ module "label" {
   tags       = "${var.tags}"
 }
 
-resource "aws_s3_bucket" "cache_bucket" {
-  count         = "${var.enabled == "true" && var.cache_enabled == "true" ? 1 : 0}"
-  bucket        = "${local.cache_bucket_name_normalised}"
-  acl           = "private"
-  force_destroy = true
-  tags          = "${module.label.tags}"
+#TODO: selectively disable if cache is s3
+# resource "aws_s3_bucket" "cache_bucket" {
+#   count         = "${var.enabled == "true" && var.cache_enabled == "true" ? 1 : 0}"
+#   bucket        = "${local.cache_bucket_name_normalised}"
+#   acl           = "private"
+#   force_destroy = true
+#   tags          = "${module.label.tags}"
 
-  lifecycle_rule {
-    id      = "codebuildcache"
-    enabled = true
+#   lifecycle_rule {
+#     id      = "codebuildcache"
+#     enabled = true
 
-    prefix = "/"
-    tags   = "${module.label.tags}"
+#     prefix = "/"
+#     tags   = "${module.label.tags}"
 
-    expiration {
-      days = "${var.cache_expiration_days}"
-    }
-  }
-}
+#     expiration {
+#       days = "${var.cache_expiration_days}"
+#     }
+#   }
+# }
 
-resource "random_string" "bucket_prefix" {
-  length  = 12
-  number  = false
-  upper   = false
-  special = false
-  lower   = true
-}
+#TODO: selectively disable if cache is s3
+# resource "random_string" "bucket_prefix" {
+#   length  = 12
+#   number  = false
+#   upper   = false
+#   special = false
+#   lower   = true
+# }
 
-locals {
-  cache_bucket_name = "${module.label.id}${var.cache_bucket_suffix_enabled == "true" ? "-${random_string.bucket_prefix.result}" : "" }"
+##TODO: selectively disable if cache is s3
+# locals {
+#   cache_bucket_name = "${module.label.id}${var.cache_bucket_suffix_enabled == "true" ? "-${random_string.bucket_prefix.result}" : "" }"
 
-  ## Clean up the bucket name to use only hyphens, and trim its length to 63 characters.
-  ## As per https://docs.aws.amazon.com/AmazonS3/latest/dev/BucketRestrictions.html
-  cache_bucket_name_normalised = "${substr(join("-", split("_", lower(local.cache_bucket_name))), 0, min(length(local.cache_bucket_name),63))}"
+#   ## Clean up the bucket name to use only hyphens, and trim its length to 63 characters.
+#   ## As per https://docs.aws.amazon.com/AmazonS3/latest/dev/BucketRestrictions.html
+#   cache_bucket_name_normalised = "${substr(join("-", split("_", lower(local.cache_bucket_name))), 0, min(length(local.cache_bucket_name),63))}"
 
-  ## This is the magic where a map of a list of maps is generated
-  ## and used to conditionally add the cache bucket option to the
-  ## aws_codebuild_project
-  cache_def = {
-    "true" = [{
-      type     = "S3"
-      location = "${var.enabled == "true" && var.cache_enabled == "true" ? join("", aws_s3_bucket.cache_bucket.*.bucket) : "none" }"
-    }]
+#   ## This is the magic where a map of a list of maps is generated
+#   ## and used to conditionally add the cache bucket option to the
+#   ## aws_codebuild_project
+#   cache_def = {
+#     "true" = [{
+#       type     = "S3"
+#       location = "${var.enabled == "true" && var.cache_enabled == "true" ? join("", aws_s3_bucket.cache_bucket.*.bucket) : "none" }"
+#     }]
 
-    "false" = []
-  }
+#     "false" = []
+#   }
 
-  # Final Map Selected from above
-  cache = "${local.cache_def[var.cache_enabled]}"
-}
+#   # Final Map Selected from above
+#   cache = "${local.cache_def[var.cache_enabled]}"
+# }
 
 resource "aws_iam_role" "default" {
   count              = "${var.enabled == "true" ? 1 : 0}"
@@ -94,12 +97,13 @@ resource "aws_iam_policy" "default" {
   policy = "${data.aws_iam_policy_document.permissions.json}"
 }
 
-resource "aws_iam_policy" "default_cache_bucket" {
-  count  = "${var.enabled == "true" && var.cache_enabled == "true" ? 1 : 0}"
-  name   = "${module.label.id}-cache-bucket"
-  path   = "/service-role/"
-  policy = "${data.aws_iam_policy_document.permissions_cache_bucket.json}"
-}
+# #TODO: selectively disable if cache is s3
+# resource "aws_iam_policy" "default_cache_bucket" {
+#   count  = "${var.enabled == "true" && var.cache_enabled == "true" ? 1 : 0}"
+#   name   = "${module.label.id}-cache-bucket"
+#   path   = "/service-role/"
+#   policy = "${data.aws_iam_policy_document.permissions_cache_bucket.json}"
+# }
 
 data "aws_iam_policy_document" "permissions" {
   statement {
@@ -128,24 +132,25 @@ data "aws_iam_policy_document" "permissions" {
   }
 }
 
-data "aws_iam_policy_document" "permissions_cache_bucket" {
-  count = "${var.enabled == "true" ? 1 : 0}"
+#TODO: selectively disable if cache is s3
+# data "aws_iam_policy_document" "permissions_cache_bucket" {
+#   count = "${var.enabled == "true" ? 1 : 0}"
 
-  statement {
-    sid = ""
+#   statement {
+#     sid = ""
 
-    actions = [
-      "s3:*",
-    ]
+#     actions = [
+#       "s3:*",
+#     ]
 
-    effect = "Allow"
+#     effect = "Allow"
 
-    resources = [
-      "${aws_s3_bucket.cache_bucket.arn}",
-      "${aws_s3_bucket.cache_bucket.arn}/*",
-    ]
-  }
-}
+#     resources = [
+#       "${aws_s3_bucket.cache_bucket.arn}",
+#       "${aws_s3_bucket.cache_bucket.arn}/*",
+#     ]
+#   }
+# }
 
 resource "aws_iam_role_policy_attachment" "default" {
   count      = "${var.enabled == "true" ? 1 : 0}"
@@ -153,11 +158,12 @@ resource "aws_iam_role_policy_attachment" "default" {
   role       = "${aws_iam_role.default.id}"
 }
 
-resource "aws_iam_role_policy_attachment" "default_cache_bucket" {
-  count      = "${var.enabled == "true" && var.cache_enabled == "true" ? 1 : 0}"
-  policy_arn = "${element(aws_iam_policy.default_cache_bucket.*.arn, count.index)}"
-  role       = "${aws_iam_role.default.id}"
-}
+##TODO: selectively disable if cache is s3
+# resource "aws_iam_role_policy_attachment" "default_cache_bucket" {
+#   count      = "${var.enabled == "true" && var.cache_enabled == "true" ? 1 : 0}"
+#   policy_arn = "${element(aws_iam_policy.default_cache_bucket.*.arn, count.index)}"
+#   role       = "${aws_iam_role.default.id}"
+# }
 
 resource "aws_codebuild_project" "default" {
   count         = "${var.enabled == "true" ? 1 : 0}"
@@ -170,8 +176,15 @@ resource "aws_codebuild_project" "default" {
     type = "${var.artifact_type}"
   }
 
-  # The cache as a list with a map object inside.
-  cache = ["${local.cache}"]
+  lifecycle {
+    ignore_changes = ["cache"]
+  }
+
+  # TODO: https://github.com/terraform-providers/terraform-provider-aws/issues/7643
+  # cache = {
+  #   type = "LOCAL",
+  #   mode = "LOCAL_DOCKER_LAYER_CACHE"
+  # }
 
   environment {
     compute_type    = "${var.build_compute_type}"
@@ -182,7 +195,7 @@ resource "aws_codebuild_project" "default" {
     environment_variable = [{
       "name"  = "AWS_REGION"
       "value" = "${signum(length(var.aws_region)) == 1 ? var.aws_region : data.aws_region.default.name}"
-    },
+      },
       {
         "name"  = "AWS_ACCOUNT_ID"
         "value" = "${signum(length(var.aws_account_id)) == 1 ? var.aws_account_id : data.aws_caller_identity.default.account_id}"
@@ -211,6 +224,7 @@ resource "aws_codebuild_project" "default" {
     buildspec           = "${var.buildspec}"
     type                = "${var.source_type}"
     location            = "${var.source_location}"
+    git_clone_depth     = "${var.git_clone_depth}"
     report_build_status = "${var.report_build_status}"
   }
 

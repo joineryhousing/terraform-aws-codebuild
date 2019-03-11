@@ -59,7 +59,7 @@ variable "badge_enabled" {
 
 variable "build_image" {
   type        = "string"
-  default     = "aws/codebuild/docker:1.12.1"
+  default     = "aws/codebuild/docker:18.09.0"
   description = "Docker image for build environment, e.g. 'aws/codebuild/docker:1.12.1' or 'aws/codebuild/eb-nodejs-6.10.0-amazonlinux-64:4.0.0'. For more info: http://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref.html"
 }
 
