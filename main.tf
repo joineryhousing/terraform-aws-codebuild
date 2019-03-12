@@ -184,6 +184,12 @@ resource "aws_iam_role_policy_attachment" "default_asset_bucket" {
   role       = "${aws_iam_role.default.id}"
 }
 
+resource "aws_iam_role_policy_attachment" "default" {
+  count      = "${var.enabled == "true" ? 1 : 0}"
+  policy_arn = "${aws_iam_policy.default.arn}"
+  role       = "${aws_iam_role.default.id}"
+}
+
 ##TODO: selectively disable if cache is s3
 # resource "aws_iam_role_policy_attachment" "default_cache_bucket" {
 #   count      = "${var.enabled == "true" && var.cache_enabled == "true" ? 1 : 0}"
