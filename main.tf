@@ -152,9 +152,34 @@ data "aws_iam_policy_document" "permissions" {
 #   }
 # }
 
+data "aws_iam_policy_document" "default_asset_bucket" {
+  count = "${var.enabled == "true" && ${var.asset_bucket_name != ""} ? 1 : 0}"
+
+  statement {
+    sid = ""
+
+    actions = [
+      "s3:*",
+    ]
+
+    effect = "Allow"
+
+    resources = [
+      "arn:aws:s3:::${var.asset_bucket_name}",
+      "arn:aws:s3:::${var.asset_bucket_name}/*",
+    ]
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "default_asset_bucket" {
+  count = "${var.enabled == "true" && ${var.asset_bucket_name != ""} ? 1 : 0}"
+  policy_arn = "${aws_iam_policy.default_asset_bucket.arn}"
+  role       = "${aws_iam_role.default.id}"
+}
+
 resource "aws_iam_role_policy_attachment" "default" {
   count      = "${var.enabled == "true" ? 1 : 0}"
-  policy_arn = "${aws_iam_policy.default.arn}"
+  policy_arn = "${element(aws_iam_policy.default_asset_bucket.*.arn, count.index)}"
   role       = "${aws_iam_role.default.id}"
 }
 

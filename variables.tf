@@ -164,3 +164,9 @@ variable "git_clone_depth" {
   default     = "1"
   description = "The number of prior commits to load"
 }
+
+variable "asset_bucket_name" {
+  type = "string"
+  default = ""
+  description = "The name of the asset bucket to permission access to"
+}
