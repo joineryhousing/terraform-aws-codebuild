@@ -172,7 +172,7 @@ data "aws_iam_policy_document" "default_asset_bucket" {
 }
 
 resource "aws_iam_role_policy_attachment" "default_asset_bucket" {
-  count = "${var.enabled == "true" && ${var.asset_bucket_name != ""} ? 1 : 0}"
+  count = "${var.enabled == "true" && var.asset_bucket_name != ""} ? 1 : 0}"
   policy_arn = "${aws_iam_policy.default_asset_bucket.arn}"
   role       = "${aws_iam_role.default.id}"
 }
