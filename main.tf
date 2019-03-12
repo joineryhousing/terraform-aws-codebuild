@@ -152,7 +152,7 @@ data "aws_iam_policy_document" "permissions" {
 #   }
 # }
 
-resource "aws_iam_policy" "default_cache_bucket" {
+resource "aws_iam_policy" "default_asset_bucket" {
   count  = "${var.enabled == "true" && var.asset_bucket_name != "" ? 1 : 0}"
   name   = "${module.label.id}-asset-bucket"
   path   = "/service-role/"
