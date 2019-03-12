@@ -158,3 +158,9 @@ variable "report_build_status" {
   default     = "false"
   description = "Set to true to report the status of a build's start and finish to your source provider. This option is only valid when the source_type is BITBUCKET or GITHUB."
 }
+
+variable "git_clone_depth" {
+  type        = "string"
+  default     = "1"
+  description = "The number of prior commits to load"
+}
