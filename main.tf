@@ -105,6 +105,7 @@ resource "aws_iam_policy" "default" {
 #   policy = "${data.aws_iam_policy_document.permissions_cache_bucket.json}"
 # }
 
+#This is not ideal but i'm in a hurry
 data "aws_iam_policy_document" "permissions" {
   statement {
     sid = ""
@@ -127,6 +128,7 @@ data "aws_iam_policy_document" "permissions" {
       "sqs:*",
       "ecs:*",
       "iam:PassRole",
+      "dynamodb:*"
     ]
 
     effect = "Allow"
