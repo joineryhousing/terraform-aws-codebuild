@@ -115,6 +115,7 @@ data "aws_iam_policy_document" "permissions" {
       "ecs:*",
       "iam:PassRole",
       "iam:GetRole",
+      "iam:GetUser",
       "logs:CreateLogGroup",
       "logs:CreateLogStream",
       "logs:PutLogEvents",
