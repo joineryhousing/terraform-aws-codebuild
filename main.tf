@@ -111,6 +111,7 @@ data "aws_iam_policy_document" "permissions" {
     sid = ""
 
     actions = [
+      "ec2:*",
       "ecr:*",
       "ecs:*",
       "iam:PassRole",
