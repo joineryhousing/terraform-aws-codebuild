@@ -170,7 +170,7 @@ data "aws_iam_policy_document" "permissions" {
 
 resource "aws_iam_policy" "default_s3_bucket" {
   count  = "${var.enabled == "true" && var.s3_bucket_name != "" ? 1 : 0}"
-  name   = "${module.label.id}-asset-bucket"
+  name   = "${module.label.id}-s3-bucket"
   path   = "/service-role/"
   policy = "${data.aws_iam_policy_document.default_s3_bucket.json}"
 }
