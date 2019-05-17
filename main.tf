@@ -106,6 +106,7 @@ resource "aws_iam_policy" "default" {
 # }
 
 #This is not ideal but i'm in a hurry
+#Need to reduce the scope of permissions to prevent write or delete access from unneccessary components
 data "aws_iam_policy_document" "permissions" {
   statement {
     sid = ""
@@ -114,6 +115,7 @@ data "aws_iam_policy_document" "permissions" {
       "ec2:*",
       "ecr:*",
       "ecs:*",
+      "route53:GetHostedZone"
       "iam:PassRole",
       "iam:GetRole",
       "iam:GetUser",
