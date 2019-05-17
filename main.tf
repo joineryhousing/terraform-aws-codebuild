@@ -114,6 +114,7 @@ data "aws_iam_policy_document" "permissions" {
       "ecr:*",
       "ecs:*",
       "iam:PassRole",
+      "iam:GetRole",
       "logs:CreateLogGroup",
       "logs:CreateLogStream",
       "logs:PutLogEvents",
@@ -128,7 +129,8 @@ data "aws_iam_policy_document" "permissions" {
       "sqs:*",
       "ecs:*",
       "iam:PassRole",
-      "dynamodb:*"
+      "dynamodb:*",
+      "logs:*"
     ]
 
     effect = "Allow"
