@@ -105,6 +105,7 @@ resource "aws_iam_policy" "default" {
 #   policy = "${data.aws_iam_policy_document.permissions_cache_bucket.json}"
 # }
 
+#TODO: add permissions as a parameter so that certain build stages don't need the same permissions
 data "aws_iam_policy_document" "permissions" {
   statement {
     sid = ""
@@ -126,6 +127,9 @@ data "aws_iam_policy_document" "permissions" {
       "ecr:PutImage",
       "ecs:Describe*",
       "ecs:List*",
+      "ecs:RegisterTaskDefinition",
+      "ecs:DeregisterTaskDefinition",
+      "ecs:UpdateService",
       "route53:Get*",
       "route53:List*",
       "iam:PassRole",
