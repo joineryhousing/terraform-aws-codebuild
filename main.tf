@@ -113,7 +113,7 @@ data "aws_iam_policy_document" "permissions" {
       "s3:Get*",
       "s3:List*",
       "s3:Head*",
-       "ec2:Describe*",
+      "ec2:Describe*",
       "ec2:Get*",
       "ecr:BatchCheck*",
       "ecr:BatchGet*",
