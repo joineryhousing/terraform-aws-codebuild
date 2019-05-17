@@ -105,16 +105,23 @@ resource "aws_iam_policy" "default" {
 #   policy = "${data.aws_iam_policy_document.permissions_cache_bucket.json}"
 # }
 
-#This is not ideal but i'm in a hurry
-#Need to reduce the scope of permissions to prevent write or delete access from unneccessary components
 data "aws_iam_policy_document" "permissions" {
   statement {
     sid = ""
 
     actions = [
-      "ec2:*",
-      "ecr:*",
-      "ecs:*",
+      "s3:Get*",
+      "s3:List*",
+      "s3:Head*",
+       "ec2:Describe*",
+      "ec2:Get*",
+      "ecr:BatchCheck*",
+      "ecr:BatchGet*",
+      "ecr:Describe*",
+      "ecr:Get*",
+      "ecr:List*",
+      "ecs:Describe*",
+      "ecs:List*",
       "route53:Get*",
       "route53:List*",
       "iam:PassRole",
@@ -125,19 +132,19 @@ data "aws_iam_policy_document" "permissions" {
       "logs:CreateLogGroup",
       "logs:CreateLogStream",
       "logs:PutLogEvents",
+      "logs:ListTagsLogGroup",
       "ssm:GetParameters",
-      "elasticloadbalancing:*",
-      "autoscaling:*",
-      "cloudwatch:*",
-      "s3:*",
-      "sns:*",
-      "cloudformation:*",
-      "rds:*",
-      "sqs:*",
-      "ecs:*",
-      "iam:PassRole",
-      "dynamodb:*",
-      "logs:*"
+      "elasticloadbalancing:Describe*",
+      "cloudwatch:Describe*",
+      "cloudwatch:Get*",
+      "cloudwatch:List*",
+      "dynamodb:Get*",
+      "dynamodb:List*",
+      "dynamodb:Query",
+      "dynamodb:PutItem",
+      "dynamodb:DeleteItem",
+      "logs:Describe*",
+      "logs:Get*",
     ]
 
     effect = "Allow"
