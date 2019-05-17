@@ -165,7 +165,7 @@ variable "git_clone_depth" {
   description = "The number of prior commits to load"
 }
 
-variable "asset_bucket_name" {
+variable "s3_bucket_name" {
   type = "string"
   default = ""
   description = "The name of the asset bucket to permission access to"

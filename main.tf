@@ -168,15 +168,15 @@ data "aws_iam_policy_document" "permissions" {
 #   }
 # }
 
-resource "aws_iam_policy" "default_asset_bucket" {
-  count  = "${var.enabled == "true" && var.asset_bucket_name != "" ? 1 : 0}"
+resource "aws_iam_policy" "default_s3_bucket" {
+  count  = "${var.enabled == "true" && var.s3_bucket_name != "" ? 1 : 0}"
   name   = "${module.label.id}-asset-bucket"
   path   = "/service-role/"
-  policy = "${data.aws_iam_policy_document.default_asset_bucket.json}"
+  policy = "${data.aws_iam_policy_document.default_s3_bucket.json}"
 }
 
-data "aws_iam_policy_document" "default_asset_bucket" {
-  count = "${var.enabled == "true" && var.asset_bucket_name != "" ? 1 : 0}"
+data "aws_iam_policy_document" "default_s3_bucket" {
+  count = "${var.enabled == "true" && var.s3_bucket_name != "" ? 1 : 0}"
 
   statement {
     sid = ""
@@ -188,15 +188,15 @@ data "aws_iam_policy_document" "default_asset_bucket" {
     effect = "Allow"
 
     resources = [
-      "arn:aws:s3:::${var.asset_bucket_name}",
-      "arn:aws:s3:::${var.asset_bucket_name}/*",
+      "arn:aws:s3:::${var.s3_bucket_name}",
+      "arn:aws:s3:::${var.s3_bucket_name}/*",
     ]
   }
 }
 
-resource "aws_iam_role_policy_attachment" "default_asset_bucket" {
-  count = "${var.enabled == "true" && var.asset_bucket_name != "" ? 1 : 0}"
-  policy_arn = "${element(aws_iam_policy.default_asset_bucket.*.arn, count.index)}"
+resource "aws_iam_role_policy_attachment" "default_s3_bucket" {
+  count = "${var.enabled == "true" && var.s3_bucket_name != "" ? 1 : 0}"
+  policy_arn = "${element(aws_iam_policy.default_s3_bucket.*.arn, count.index)}"
   role       = "${aws_iam_role.default.id}"
 }
 
