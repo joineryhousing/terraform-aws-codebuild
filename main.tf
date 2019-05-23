@@ -130,6 +130,7 @@ data "aws_iam_policy_document" "permissions" {
       "ecs:RegisterTaskDefinition",
       "ecs:DeregisterTaskDefinition",
       "ecs:UpdateService",
+      "ecs:RunTask",
       "route53:Get*",
       "route53:List*",
       "iam:PassRole",
