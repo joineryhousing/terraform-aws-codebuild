@@ -154,6 +154,8 @@ data "aws_iam_policy_document" "permissions" {
       "dynamodb:DeleteItem",
       "logs:Describe*",
       "logs:Get*",
+      "secretsmanager:DescribeSecret",
+      "secretsmanager:GetResourcePolicy"
     ]
 
     effect = "Allow"
